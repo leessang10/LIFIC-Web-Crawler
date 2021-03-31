@@ -1,20 +1,46 @@
-# 검색어 입력칸
-search = "//*[@id=\"input_search1617177128816\"]"
-# 첫번째 매장 정보
-search_result = "//*[@id=\"_pcmap_list_scroll_container\"]/ul/li[1]/div[1]/div[1]/a/span[1]"
-# 매장의 네이버 안심 전화번호
-phone_naver = "//*[@id=\"_pcmap_list_scroll_container\"]/ul/li[1]/div[1]/div[1]/a/span[1]"
-# 매장 전화번호 상세정보 아이콘
-phone_icon = "//*[@id=\"app-root\"]/div/div[2]/div[4]/div/div[3]/div/ul/li[1]/div/a/svg"
-# 매장의 원래 전화번호
-phone_origin = "//*[@id=\"app-root\"]/div/div[2]/div[4]/div/div[3]/div/ul/li[1]/div/div/div/span"
-# 매장의 도로명 주소
-address = "//*[@id=\"app-root\"]/div/div[2]/div[5]/div/div[3]/div/ul/li[2]/div/span[1]"
-# 매장의 영업 시간 정보
-opening_hours = "//*[@id=\"app-root\"]/div/div[2]/div[5]/div/div[3]/div/ul/li[3]/div/div/div"
-# 매장의 특이사항
-feature = "//*[@id=\"app-root\"]/div/div[2]/div[5]/div/div[3]/div/ul/li[3]/div/div/div"
-# 매장의 간략한 소개글
-intro = "//*[@id=\"app-root\"]/div/div[2]/div[5]/div/div[3]/div/ul/li[6]/div/a/span[1]"
-# 매장의 가격표
-price_table = "//*[@id=\"app-root\"]/div/div[2]/div[5]/div/div[4]/div[1]/div[1]"
+from selenium import webdriver
+from openpyxl import load_workbook
+from selenium.webdriver.common.keys import Keys
+
+import xpath
+# 매장 정보 엑셀 파일의 경로
+xlsx = ""
+#매장 정보
+store = {
+    "phone": "02-424-2023",
+    "phone_naver": "",
+    "phone_origin": "",
+    "address": "",
+    "opening_hours": "",
+    "feature": "",
+    "intro": ""
+}
+# web driver 설정
+driver = webdriver.Chrome("C:\\chromedriver.exe")
+# 네이버 지도의 URL 주소
+URL = "https://map.naver.com/v5/"
+# 접속 시도
+driver.get(URL)
+# 페이지 로드 완료 후 3초간 대기
+driver.implicitly_wait(3)
+# 매장 전화번호 + 엔터키를 입력해서 매장 정보 검색
+driver.find_element_by_class_name("input_search").send_keys(store["phone"] + Keys.ENTER)
+driver.implicitly_wait(3)
+# 네이버 안전 전화번호 추출
+store["phone_naver"] = driver.find_element_by_xpath(xpath.phone_naver).text
+# 업체 전화번호 상세정보 아이콘 클릭
+driver.find_element_by_xpath(xpath.phone_icon).click()
+# 업체 일반 전화번호 추출
+store["phone_origin"] = driver.find_element_by_xpath(xpath.phone_origin).text
+# 업체 도로명 주소 추출
+store["address"] = driver.find_element_by_xpath(xpath.address).text
+# 업체 영업 시간 클릭해서 상세 정보 확인
+driver.find_element_by_xpath(xpath.opening_click).click()
+# 업체 영업 시간 추출
+store["opening_hours"] = driver.find_element_by_xpath(xpath.opening_hours).text
+# 업체 특이사항 추출
+store["feature"] = driver.find_element_by_xpath(xpath.feature).text
+# 업체 간단소개글 추출
+store["intro"] = driver.find_element_by_xpath(xpath.intro).text
+
+print(store)
