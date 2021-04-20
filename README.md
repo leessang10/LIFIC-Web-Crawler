@@ -1,7 +1,7 @@
 # LIFIC-Web-Crawler
 LIFIC DB 데이터 크롤링 작업을 자동화
 
-0x01. naver_map: 네이버지도의 업체정보를 가져옴
+0x01. naver_map: **네이버지도**의 업체정보를 가져옴
   1. raw_main.py: 가장 처음 만든 프로그램. 구현, 동작되지만 모듈화가 안되어있음
   2. naver_map.py: raw_main.py를 리팩토링하기 위한 py파일
   3. glance.py: 기존 비동기적인 일괄처리 방식에서 동기적인 방식으로 수정함. 프로그램 실행 과정 도중 수작업을 할 수 있음
