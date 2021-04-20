@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 # 엑셀 불러오기
 load_wb = load_workbook("C:\\Users\\leess\\Downloads\\lific.xlsx")
 load_ws = load_wb['Sheet1']
-table = load_ws['A678':'AZ1384']
+table = load_ws['A758':'AZ837']
 
 driver = webdriver.Chrome("C:\\chromedriver.exe")
 # 네이버 지도의 URL 주소

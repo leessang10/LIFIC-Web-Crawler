@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 dir_xlsx = "C:\\Users\\leess\\Downloads\\lific.xlsx"
-table_range = "A678:Z757"
+table_range = "A758:Z837"
 table_range_start, table_range_end = table_range.split(":")
 
 load_wb = load_workbook(dir_xlsx)
@@ -21,12 +21,11 @@ driver.get(URL)
 driver.implicitly_wait(3)
 
 cnt = 0
-info_list = []
 for row in table:
     try:
-        time.sleep(3)
+        store_name = row[0].value
         store_num = row[1].value
-        print(cnt, ": ", store_num)
+        print(cnt, ":", store_name, store_num, sep=" ")
         cnt += 1
         # 매장 전화번호 + 엔터키를 입력해서 매장 정보 검색
         input_search = driver.find_element_by_class_name("input_search")
