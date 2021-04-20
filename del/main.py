@@ -3,7 +3,7 @@ import time
 from openpyxl import load_workbook
 from selenium import webdriver
 
-import data_crawler
+from test import data_crawler
 
 # 엑셀 불러오기
 load_wb = load_workbook("C:\\Users\\leess\\Downloads\\lific.xlsx")

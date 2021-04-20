@@ -1,5 +1,4 @@
 import time
-
 from openpyxl import load_workbook
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -7,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 # 엑셀 불러오기
 load_wb = load_workbook("C:\\Users\\leess\\Downloads\\lific.xlsx")
 load_ws = load_wb['Sheet1']
-table = load_ws['A157':'AZ']
+table = load_ws['A678':'AZ1384']
 
 driver = webdriver.Chrome("C:\\chromedriver.exe")
 # 네이버 지도의 URL 주소
@@ -21,9 +20,9 @@ cnt = 0
 info_list = []
 for row in table:
     time.sleep(3)
-    print("#", cnt, "#", row[1].value)
+    print(cnt, ": ", row[1].value)
+    cnt += 1
     # 매장 전화번호 + 엔터키를 입력해서 매장 정보 검색
-
     driver.find_element_by_class_name("input_search").clear()
     driver.find_element_by_class_name("input_search").send_keys(row[1].value + Keys.ENTER)
     time.sleep(3)
@@ -39,20 +38,9 @@ for row in table:
         rows = info.find_elements_by_class_name("_1M_Iz")
 
         for row1 in rows:
-            # 클릭 가능하면 다 눌러보기
             row_str = str(row1.text)
-            if row_str.startswith("주소"):
-                continue
-            elif row_str.startswith("영업시간"):
+            if row_str.startswith("영업시간"):
                 row1.click()
-            elif row_str.startswith("가격 정보 수정 제안"):
-                continue
-            elif row_str.startswith("편의"):
-                continue
-            elif row_str.startswith("설명"):
-                row1.click()
-            elif row_str.startswith("홈페이지"):
-                continue
 
         time.sleep(2)
 
@@ -65,22 +53,16 @@ for row in table:
                 infos.append(row_str2[4:])
             elif row_str2.startswith("편의"):
                 infos.append(row_str2[2:])
-            elif row_str2.startswith("설명"):
-                infos.append(row_str2[2:])
-        time.sleep(2)
 
     except:
-        print("main에서 에러")
+        infos.clear()
+        infos.append("error")
     finally:
+        # 원래 프레임으로 빠져 나오기
+        driver.switch_to.default_content()
         print(infos)
         info_list = infos
-
-    # 원래 프레임으로 빠져 나오기
-    driver.switch_to.default_content()
-
-    for i in range(len(info_list)):
-        row[2 + i].value = info_list[i]
-
-    info_list.clear()
-    load_wb.save("C:\\Users\\leess\\Downloads\\lific.xlsx")
-    cnt += 1
+        for i in range(len(info_list)):
+            row[2 + i].value = info_list[i]
+        load_wb.save("C:\\Users\\leess\\Downloads\\lific.xlsx")
+        cnt += 1
