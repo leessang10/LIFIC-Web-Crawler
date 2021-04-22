@@ -2,10 +2,27 @@ import time
 from openpyxl import load_workbook
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+# glance.py
+# 검색하며 중간에 입력을 받음
+# 동시작업할 때 사용한다
+def get_store_info():
+    section_info = driver.find_element_by_class_name("_6aUG7")
+    infos = section_info.find_elements_by_class_name("_1M_Iz")
+    for info in infos:
+        info_str = str(info.text).replace("\n", "_")
+        if info_str.startswith("설명"):
+            info.click()
+    for info in infos:
+        info_str = str(info.text).replace("\n", "_")
+        if info_str.startswith("설명"):
+            print(info_str)
+
 
 dir_xlsx = "C:\\Users\\leess\\Downloads\\lific.xlsx"
-table_range = "A838:AZ848"
-table_range_start, table_range_end = table_range.split(":")
+table_start = 1028
+cnt = table_start
+table_range_start = "A" + str(table_start)
+table_range_end = "Z" + str(table_start+90)
 
 load_wb = load_workbook(dir_xlsx)
 load_ws = load_wb['Sheet1']
@@ -34,26 +51,28 @@ for row in table:
         input_search.clear()
         input_search.send_keys(store_num + Keys.ENTER)
         time.sleep(3)
-        # Iframe 전환
-        driver.switch_to.frame("entryIframe")
         # 업체 정보가 나타내는 정보의 수준을 4단계로 구분하여 입력받음
-        print("A. 업체 정보에 있음\n"
-              "B. 업체 홈페이지에 있음\n"
-              "C. 소개글만 있음\n"
-              "D. 최악임")
-        
+        print("a. 가격 o\n"
+              "b. 가격 x\n"
+              "c. 정보 x")
+
         status = input()
-        row[5].value = status
+        if status == 'a':
+            row[5].value = "O"
+        elif status == 'b':
+            row[5].value = "상품정보 없음"
+        elif status == 'c':
+            row[5].value = "X"
 
-        # 업체 정보 중 '간략한소개'을 개행없이 출력
-        store_info = driver.find_element_by_class_name("_6aUG7")
-        store_intro = store_info.find_element_by_class_name("_3__3i").click()
-        intro = str(store_info.find_element_by_class_name("WoYOw").text)
-        intro = intro.replace("\n", " ")
-        print(intro)
+        if status != 'c':
+            # Iframe 전환
+            driver.switch_to.frame("entryIframe")
 
-        # Iframe 전환
-        driver.switch_to.default_content()
+            # 업체 정보 중 '소개'를 개행없이 출력
+            get_store_info()
+
+            # Iframe 전환
+            driver.switch_to.default_content()
     except:
         print("error")
     finally:
